@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Animated Course Lessons</title>
+
+  <!-- GOOGLE FONTS -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet"/>
+  
+  <style>
+    /* RESET & BASE */
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body, html { height:100%; font-family:'Poppins',sans-serif; background:#111; color:#fff; overflow:hidden; }
+    a { color:inherit; text-decoration:none; }
+
+    /* CONTAINER */
+    .app {
+      display:flex; height:100%;
+      animation:fadeIn 1s ease-out;
+    }
+
+    /* SIDEBAR / TOPBAR */
+    .lessons {
+      background: #1e1e2f;
+      width: 280px;
+      overflow-y: auto;
+      display: flex; flex-direction: column;
+      animation:slideInLeft 0.8s ease-out;
+    }
+    .lessons-header {
+      padding:1rem; font-size:1.25rem; text-align:center; background:#27293d;
+      border-bottom:1px solid #333;
+    }
+    .lesson-item {
+      padding:0.75rem 1rem;
+      border-bottom:1px solid #333;
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+    .lesson-item:hover {
+      background: #333;
+    }
+    .lesson-item.active {
+      background: #38bdf8;
+      color: #111;
+      font-weight:600;
+    }
+    .lesson-item .number {
+      display:inline-block; width:24px; text-align:center; margin-right:0.5rem;
+      opacity:0.6; transition:opacity 0.3s;
+    }
+    .lesson-item.active .number { opacity:1; }
+
+    /* PROGRESS UNDERLINE ANIMATION */
+    .lesson-item::after {
+      content:'';
+      position:absolute; bottom:0; left:0; height:3px; width:0%;
+      background:#22c55e; transition:width 0.4s;
+    }
+    .lesson-item.active::after { width:100%; }
+
+    /* VIDEO AREA */
+    .player {
+      flex:1; display:flex; flex-direction:column; background:#000; position:relative;
+      animation:fadeIn 1s ease-out 0.5s forwards; opacity:0;
+    }
+    .video-wrap {
+      flex:1; position:relative; background:#000;
+      display:flex; align-items:center; justify-content:center;
+    }
+    video {
+      width:100%; height:100%; object-fit:contain;
+    }
+    .video-info {
+      padding:1rem; background:#1f2937; font-size:1rem;
+      border-top:1px solid #333;
+    }
+
+    /* KEYFRAMES */
+    @keyframes slideInLeft {
+      from { transform:translateX(-100%); } to { transform:translateX(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity:0; } to { opacity:1; }
+    }
+
+    /* RESPONSIVE: MOBILE TOPBAR */
+    @media(max-width:720px) {
+      .app { flex-direction:column; }
+      .lessons { width:100%; height:140px; flex-direction:row; overflow-x:auto; }
+      .lessons-header { display:none; }
+      .player { height: calc(100% - 140px); }
+    }
+
+    /* CUSTOM CONTROLS OVERLAY */
+    .controls {
+      position:absolute; bottom:20px; left:50%; transform:translateX(-50%);
+      background:rgba(0,0,0,0.4); padding:0.5rem 1rem; border-radius:8px;
+      display:flex; align-items:center; gap:1rem; opacity:0; pointer-events:none;
+      transition:opacity 0.3s;
+    }
+    .player:hover .controls { opacity:1; pointer-events:auto; }
+
+    .btn { background:#38bdf8; border:none; padding:0.5rem; border-radius:50%;
+      cursor:pointer; display:flex; align-items:center; justify-content:center;
+      transition:transform 0.2s;background-size:cover;
+    }
+    .btn:hover { transform:scale(1.1); }
+
+    .progress-container {
+      width:250px; height:6px; background:#333; border-radius:3px; cursor:pointer;
+      overflow:hidden; position:relative;
+    }
+    .progress {
+      width:0; height:100%; background:#22c55e; transition:width 0.1s;
+    }
+    .time { font-size:0.85rem; min-width:50px; text-align:center; }
+
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- LESSONS LIST -->
+    <aside class="lessons" aria-label="Lesson List">
+      <div class="lessons-header">Course Lessons</div>
+      <!-- dynamically injected -->
+    </aside>
+
+    <!-- VIDEO PLAYER -->
+    <section class="player" aria-label="Video Player">
+      <div class="video-wrap">
+        <video id="vid" preload="metadata"></video>
+        <!-- Custom Controls -->
+        <div class="controls" aria-label="Video controls">
+          <button id="btnPlay" class="btn" aria-label="Play/Pause">▶️</button>
+          <div class="progress-container" aria-label="Seek bar">
+            <div class="progress" id="prog"></div>
+          </div>
+          <div class="time" id="time">0:00 / 0:00</div>
+          <button id="btnMute" class="btn" aria-label="Mute/Unmute">🔊</button>
+        </div>
+      </div>
+      <div class="video-info" id="vidTitle">Select a lesson…</div>
+    </section>
+  </div>
+
+  <script>
+  // LESSON DATA
+  const lessons = [
+    {num:1, title:'Intro & Setup', src:'Lessons/udemy.mp4'},
+    {num:2, title:'HTML5 Essentials', src:'video2.mp4'},
+    {num:3, title:'Tags & Uses', src:'video3.mp4'},
+    {num:4, title:'Structure', src:'video4.mp4'},
+    {num:5, title:'Advanced Tags', src:'video5.mp4'},
+  ];
+
+  const lessonsEl = document.querySelector('.lessons');
+  const vid        = document.getElementById('vid');
+  const vidTitle   = document.getElementById('vidTitle');
+  const btnPlay    = document.getElementById('btnPlay');
+  const btnMute    = document.getElementById('btnMute');
+  const progEl     = document.getElementById('prog');
+  const timeEl     = document.getElementById('time');
+  let progressData = JSON.parse(localStorage.getItem('lessonProg')||'{}');
+
+  // BUILD LESSON ITEMS
+  lessons.forEach(ls => {
+    const div = document.createElement('div');
+    div.className='lesson-item';
+    div.innerHTML = `<span class="number">${ls.num}</span>${ls.title}`;
+    lessonsEl.append(div);
+    // restore progress underline
+    const pct = progressData[ls.src]||0;
+    div.style.setProperty('--p', pct*100+'%');
+    div.querySelector('::after');
+    div.addEventListener('click', ()=>selectLesson(ls, div));
+  });
+
+  // SELECT LESSON
+  function selectLesson(lesson, el){
+    document.querySelectorAll('.lesson-item').forEach(x=>x.classList.remove('active'));
+    el.classList.add('active');
+    vid.src = lesson.src;
+    vidTitle.textContent = `${lesson.num}. ${lesson.title}`;
+    vid.currentTime = (progressData[lesson.src]||0)*vid.duration||0;
+    vid.play();
+    btnPlay.textContent = '⏸️';
+  }
+
+  // PLAY/PAUSE
+  btnPlay.onclick = ()=>{
+    if(vid.paused){ vid.play(); btnPlay.textContent='⏸️'; }
+    else         { vid.pause();btnPlay.textContent='▶️'; }
+  };
+
+  // MUTE/UNMUTE
+  btnMute.onclick = ()=>{
+    vid.muted = !vid.muted;
+    btnMute.textContent = vid.muted ? '🔇' : '🔊';
+  };
+
+  // TIME & PROGRESS UPDATES
+  vid.ontimeupdate = ()=>{
+    const pct = vid.currentTime/vid.duration||0;
+    progEl.style.width = (pct*100)+'%';
+    timeEl.textContent = 
+      `${Math.floor(vid.currentTime/60)}:${String(Math.floor(vid.currentTime%60)).padStart(2,'0')}` +
+      ' / ' +
+      `${Math.floor(vid.duration/60)}:${String(Math.floor(vid.duration%60)).padStart(2,'0')}`;
+    // save
+    if(vid.src){
+      const key = vid.src.split('/').pop();
+      progressData[key] = pct;
+      localStorage.setItem('lessonProg', JSON.stringify(progressData));
+    }
+  };
+
+  // SEEKING
+  document.querySelector('.progress-container').onclick = e=>{
+    const rect = e.currentTarget.getBoundingClientRect();
+    const pct  = (e.clientX - rect.left)/rect.width;
+    vid.currentTime = pct * vid.duration;
+  };
+
+  // END OF PLAY resets icon
+  vid.onended = ()=> btnPlay.textContent='▶️';
+  </script>
+</body>
+</html>

@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Advanced Animated Landing Page</title>
+    <style>
+      /* Reset & base styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        scroll-behavior: smooth;
+      }
+      body {
+        background: linear-gradient(135deg, #1d2b64, #f8cdda);
+        color: #fff;
+        min-height: 100vh;
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      /* Header */
+      header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 70px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.15);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 40px;
+        z-index: 1000;
+      }
+      header .logo {
+        font-weight: 700;
+        font-size: 1.8rem;
+        letter-spacing: 3px;
+        cursor: default;
+        user-select: none;
+      }
+      nav a {
+        margin-left: 30px;
+        font-weight: 600;
+        position: relative;
+        padding-bottom: 5px;
+        transition: color 0.3s ease;
+      }
+      nav a::after {
+        content: "";
+        position: absolute;
+        width: 0%;
+        height: 2px;
+        bottom: 0;
+        left: 0;
+        background: #f8cdda;
+        transition: width 0.3s ease;
+      }
+      nav a:hover,
+      nav a.active {
+        color: #f8cdda;
+      }
+      nav a:hover::after,
+      nav a.active::after {
+        width: 100%;
+      }
+
+      /* Main */
+      main {
+        padding-top: 70px;
+      }
+
+      /* Hero */
+      #hero {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 0 20px;
+        overflow: hidden;
+      }
+      #hero h1 {
+        font-size: 3.8rem;
+        margin-bottom: 20px;
+        opacity: 0;
+        transform: translateY(40px);
+        animation: fadeUp 1s ease forwards 0.3s;
+      }
+      #hero::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url("https://images.unsplash.com/photo-1498050108023-c5249f4df085?fit=crop&w=1200&q=80")
+          center/cover no-repeat;
+        z-index: -1;
+        opacity: 0.2;
+        transform: scale(1.2);
+      }
+
+      #hero p {
+        font-size: 1.3rem;
+        max-width: 600px;
+        color: #ddd;
+        margin-bottom: 40px;
+        opacity: 0;
+        transform: translateY(40px);
+        animation: fadeUp 1s ease forwards 0.7s;
+      }
+      #hero button {
+        padding: 18px 50px;
+        font-size: 1.2rem;
+        border: none;
+        border-radius: 35px;
+        background: #f8cdda;
+        color: #1d2b64;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 8px 30px rgba(248, 205, 218, 0.6);
+        user-select: none;
+        opacity: 0;
+        transform: translateY(40px);
+        animation: fadeUp 1s ease forwards 1.1s;
+        transition: background 0.3s ease;
+      }
+      #hero button:hover {
+        background: #ffb6b9;
+      }
+
+      /* Features */
+      #features {
+        max-width: 1100px;
+        margin: 80px auto;
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        gap: 40px;
+        padding: 0 20px;
+      }
+      .feature {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px;
+        width: 300px;
+        text-align: center;
+        box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        opacity: 0;
+        transform: translateY(50px);
+        animation: fadeUp 0.8s forwards;
+      }
+      .feature:nth-child(1) {
+        animation-delay: 0.2s;
+      }
+      .feature:nth-child(2) {
+        animation-delay: 0.4s;
+      }
+      .feature:nth-child(3) {
+        animation-delay: 0.6s;
+      }
+      .feature svg {
+        width: 64px;
+        height: 64px;
+        margin-bottom: 20px;
+        fill: #f8cdda;
+      }
+      .feature h3 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+      }
+      .feature p {
+        color: #ddd;
+        font-size: 1.1rem;
+      }
+
+      /* About */
+      #about {
+        max-width: 1000px;
+        margin: 80px auto;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 40px;
+        padding: 0 20px;
+        opacity: 0;
+        transform: translateX(-50px);
+        animation: slideInLeft 1s forwards 0.3s;
+      }
+      #about img {
+        flex: 1 1 320px;
+        max-width: 320px;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+      }
+      #about .text {
+        flex: 2 1 500px;
+        color: #ddd;
+      }
+      #about .text h2 {
+        font-size: 2.4rem;
+        margin-bottom: 20px;
+        color: #fff;
+      }
+      #about .text p {
+        font-size: 1.15rem;
+        line-height: 1.6;
+      }
+      #loader {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        background: #0f2027;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
+
+      .spinner {
+        border: 6px solid #ccc;
+        border-top: 6px solid #00ffd5;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Contact */
+      #contact {
+        max-width: 600px;
+        margin: 80px auto 120px;
+        padding: 0 20px;
+        opacity: 0;
+        transform: translateY(50px);
+        animation: fadeUp 1s forwards 0.3s;
+      }
+      #contact h2 {
+        text-align: center;
+        margin-bottom: 40px;
+        font-size: 2.5rem;
+        color: #fff;
+      }
+      #contact form {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+      }
+      #contact input,
+      #contact textarea {
+        padding: 14px 20px;
+        border-radius: 15px;
+        border: none;
+        font-size: 1rem;
+        outline: none;
+      }
+      #contact textarea {
+        resize: vertical;
+        min-height: 120px;
+      }
+      #contact button {
+        padding: 16px;
+        background: #f8cdda;
+        border: none;
+        border-radius: 35px;
+        font-weight: 700;
+        color: #1d2b64;
+        cursor: pointer;
+        box-shadow: 0 8px 30px rgba(248, 205, 218, 0.6);
+        user-select: none;
+        transition: background 0.3s ease;
+      }
+      #contact button:hover {
+        background: #ffb6b9;
+      }
+
+      /* Footer */
+      footer {
+        text-align: center;
+        padding: 20px;
+        color: #ddd;
+        font-size: 0.9rem;
+        user-select: none;
+      }
+
+      /* Animations */
+      @keyframes fadeUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes slideInLeft {
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      /* Responsive */
+      @media (max-width: 900px) {
+        #features {
+          flex-direction: column;
+          align-items: center;
+        }
+        #about {
+          flex-direction: column;
+          text-align: center;
+        }
+        #about img {
+          margin-bottom: 25px;
+        }
+      }
+      #particles-js {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        z-index: -2;
+        top: 0;
+        left: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loader">
+      <div class="spinner"></div>
+    </div>
+
+    <header>
+      <div class="logo">Code Master</div>
+      <nav>
+        <a href="#hero" class="active">Home</a>
+        <a href="#features">Features</a>
+        <a href="#about">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="#contact">Sign Up</a>
+        <a href="#contact">Login</a>
+      </nav>
+    </header>
+
+    <main>
+      <section id="hero">
+        <h1 id="typewriter">Welcome to Code Master</h1>
+
+        <p>
+          Your gateway to modern, stylish high-quality Web learing Platform for
+          FREE
+        </p>
+        <button
+          onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})"
+        >
+          Start Your Journey
+        </button>
+      </section>
+      <br /><br class="feature" />
+      <section id="features" aria-label="Features">
+        <div class="feature">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+            <path
+              d="M32 2a30 30 0 1 0 30 30A30 30 0 0 0 32 2Zm0 56a26 26 0 1 1 26-26 26 26 0 0 1-26 26Z"
+            />
+            <path
+              d="M32 10a22 22 0 1 0 22 22A22 22 0 0 0 32 10Zm0 40a18 18 0 1 1 18-18 18 18 0 0 1-18 18Z"
+            />
+          </svg>
+          <h3>Stunning Design</h3>
+          <p>
+            Eye-catching, modern glassmorphism UI with smooth animations for an
+            engaging user experience.
+          </p>
+        </div>
+        <div class="feature">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+            <path
+              d="M40 4H24a4 4 0 0 0-4 4v8H12a4 4 0 0 0-4 4v20a4 4 0 0 0 4 4h8v8a4 4 0 0 0 4 4h16a4 4 0 0 0 4-4v-8h8a4 4 0 0 0 4-4V20a4 4 0 0 0-4-4H44v-8a4 4 0 0 0-4-4Zm-4 40H28v-8h8Zm12-12H12V20h36Z"
+            />
+          </svg>
+          <h3>Responsive Layout</h3>
+          <p>
+            Looks great on all devices, from desktop monitors to mobile phones
+            and tablets.
+          </p>
+        </div>
+        <div class="feature">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+            <path
+              d="M32 6a26 26 0 1 0 26 26A26 26 0 0 0 32 6Zm0 48a22 22 0 1 1 22-22 22 22 0 0 1-22 22Z"
+            />
+            <path
+              d="M43 27h-8v-8a3 3 0 0 0-6 0v8h-8a3 3 0 0 0 0 6h8v8a3 3 0 0 0 6 0v-8h8a3 3 0 0 0 0-6Z"
+            />
+          </svg>
+          <h3>Easy to Customize</h3>
+          <p>
+            Flexible structure and clean code make it easy to adapt to your
+            needs.
+          </p>
+        </div>
+      </section>
+
+      <section id="about" aria-label="About">
+        <img
+          src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80"
+          alt="About Us Image"
+        />
+        <div class="text">
+          <h2>About Code Master</h2>
+          <p>
+            Code Master is dedicated to delivering high-quality, stylish web
+            solutions that captivate and engage users. We combine creative
+            design with cutting-edge technology to bring your ideas to life.
+            Whether you want a landing page, a portfolio, or a full website,
+            Code Master has got you covered. Welcome to World of free Web
+            learning Platform .
+          </p>
+        </div>
+      </section>
+
+      <section id="contact" aria-label="Contact">
+        <h2>Not Sure how to Start</h2>
+        <p>
+          First Create an account in Code master by click SIGN UP button. Then
+          login to go to the main course page
+        </p>
+        <br />
+        <br />
+        <form action="signup.html">
+          <button>SIGN UP</button>
+        </form>
+        <br /><br />
+        <form action="login.html">
+          <button>Login</button>
+        </form>
+      </section>
+    </main>
+
+    <footer>&copy; 2025 CodeMaster. All rights reserved.</footer>
+    <script>
+      window.addEventListener("load", function () {
+        document.getElementById("loader").style.display = "none";
+      });
+    </script>
+
+    <script>
+      // Navigation active link switching on scroll
+      const sections = document.querySelectorAll("section");
+      const navLinks = document.querySelectorAll("nav a");
+
+      window.addEventListener("scroll", () => {
+        let current = "";
+        const scrollPos = window.scrollY + 80; // header height offset
+
+        sections.forEach((section) => {
+          if (
+            scrollPos >= section.offsetTop &&
+            scrollPos < section.offsetTop + section.offsetHeight
+          ) {
+            current = section.getAttribute("id");
+          }
+        });
+
+        navLinks.forEach((link) => {
+          link.classList.remove("active");
+          if (link.getAttribute("href").substring(1) === current) {
+            link.classList.add("active");
+          }
+        });
+      });
+
+      // Contact form validation + fake submission
+      const form = document.getElementById("contactForm");
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const name = form.name.value.trim();
+        const email = form.email.value.trim();
+        const message = form.message.value.trim();
+
+        if (name.length < 3) return alert("Name must be at least 3 characters");
+        if (!validateEmail(email)) return alert("Please enter a valid email");
+        if (message.length < 10)
+          return alert("Message must be at least 10 characters");
+
+        alert(`Thanks for reaching out, ${name}! We'll get back to you soon.`);
+        form.reset();
+      });
+
+      function validateEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        return true;
+      }
+      const title = "Welcome to Code Master";
+      let i = 0;
+      function type() {
+        if (i < title.length) {
+          document.getElementById("typewriter").textContent += title.charAt(i);
+          i++;
+          setTimeout(type, 100);
+        }
+      }
+      window.addEventListener("load", type);
+    </script>
+    <script>
+      particlesJS.load("particles-js", "particles.json"); // Put config in a separate file
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+    <div id="particles-js"></div>
+  </body>
+</html>

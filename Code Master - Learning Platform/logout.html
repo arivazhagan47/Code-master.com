@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Logout</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    body, html {
+      height: 100%;
+      background: #0f172a;
+      color: white;
+      overflow: hidden;
+    }
+
+    .loader-container {
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #0f172a;
+      flex-direction: column;
+      animation: fadeOut 2s ease 3s forwards;
+    }
+
+    .loader {
+      width: 80px;
+      height: 80px;
+      border: 10px solid #334155;
+      border-top: 10px solid #38bdf8;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    .logout-text {
+      margin-top: 20px;
+      font-size: 1.5rem;
+      opacity: 0.8;
+    }
+
+    .logout-message {
+      opacity: 0;
+      text-align: center;
+      font-size: 2rem;
+      transform: scale(0.8);
+      animation: showMessage 1s ease-in-out 4s forwards;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg);}
+      100% { transform: rotate(360deg);}
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+    }
+
+    @keyframes showMessage {
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.3;
+      background: #38bdf8;
+      animation: float 10s infinite;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) scale(0.5);
+        opacity: 0;
+      }
+      50% {
+        opacity: 0.5;
+      }
+      100% {
+        transform: translateY(-10vh) scale(1);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="loader-container" id="loaderContainer">
+    <div class="loader"></div>
+    <div class="logout-text">Logging out...</div>
+  </div>
+
+  <div class="logout-message" id="logoutMessage">
+    ✅ You have been successfully logged out.<br />
+    <small>Redirecting to homepage...</small>
+  </div>
+
+  <script>
+    // Create background bubbles
+    for (let i = 0; i < 30; i++) {
+      const bubble = document.createElement('div');
+      bubble.classList.add('bubble');
+      bubble.style.width = `${Math.random() * 40 + 10}px`;
+      bubble.style.height = bubble.style.width;
+      bubble.style.left = `${Math.random() * 100}vw`;
+      bubble.style.animationDuration = `${Math.random() * 10 + 5}s`;
+      document.body.appendChild(bubble);
+    }
+
+    // Simulate logout delay and redirect
+    setTimeout(() => {
+      document.getElementById('loaderContainer').style.display = 'none';
+      document.getElementById('logoutMessage').style.display = 'block';
+    }, 4000);
+
+    setTimeout(() => {
+      window.location.href = "index.html"; // Change to your homepage URL
+    }, 8000);
+  </script>
+
+</body>
+</html>

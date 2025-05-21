@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Advanced Animated Sign Up Page</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background: linear-gradient(135deg, #1d2b64, #f8cdda);
+        overflow: hidden;
+        animation: backgroundMove 10s infinite alternate ease-in-out;
+      }
+      @keyframes backgroundMove {
+        0% {
+          background-position: 0% 50%;
+        }
+        100% {
+          background-position: 100% 50%;
+        }
+      }
+      .container {
+        width: 420px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 50px 40px;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+        animation: floatIn 1s ease forwards;
+        transform: translateY(40px);
+        opacity: 0;
+      }
+      @keyframes floatIn {
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      .container h2 {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #fff;
+        font-size: 28px;
+        letter-spacing: 1px;
+      }
+      .input-group {
+        margin-bottom: 25px;
+        position: relative;
+      }
+      .input-group input {
+        width: 100%;
+        padding: 14px;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        border-radius: 10px;
+        color: #fff;
+        outline: none;
+        transition: all 0.3s ease;
+      }
+      .input-group input:focus {
+        background: rgba(255, 255, 255, 0.3);
+      }
+      .input-group label {
+        position: absolute;
+        top: 50%;
+        left: 15px;
+        transform: translateY(-50%);
+        color: #ccc;
+        pointer-events: none;
+        transition: 0.3s ease;
+      }
+      .input-group input:focus + label,
+      .input-group input:valid + label {
+        top: -10px;
+        left: 12px;
+        font-size: 12px;
+        background: #1d2b64;
+        padding: 0 6px;
+        border-radius: 4px;
+      }
+      .btn {
+        width: 100%;
+        padding: 14px;
+        background: #fff;
+        color: #1d2b64;
+        font-weight: 600;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: transform 0.3s ease, background 0.3s;
+      }
+      .btn:hover {
+        background: #f0f0f0;
+        transform: scale(1.05);
+      }
+      .footer {
+        text-align: center;
+        margin-top: 20px;
+        color: #eee;
+        font-size: 14px;
+      }
+      .footer a {
+        color: #fff;
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Create Account</h2>
+      <form onsubmit="handleSignUp(event)">
+        <div class="input-group">
+          <input
+            type="text"
+            id="fullname"
+            name="fullname"
+            autocomplete="off"
+            required
+          />
+          <label for="fullname">Full Name</label>
+        </div>
+        <div class="input-group">
+          <input
+            type="email"
+            id="email"
+            name="email"
+            autocomplete="off"
+            required
+          />
+          <label for="email">Email</label>
+        </div>
+        <div class="input-group">
+          <input
+            type="password"
+            id="password"
+            name="password"
+            autocomplete="off"
+            required
+          />
+          <label for="password">Password</label>
+        </div>
+        <div class="input-group">
+          <input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            autocomplete="off"
+            required
+          />
+          <label for="confirmPassword">Confirm Password</label>
+        </div>
+        <button type="submit" class="btn">Sign Up</button>
+      </form>
+      <div class="footer">
+        Already have an account? <a href="login.html">Login</a><br />
+        Already have Signed In? <a href="index.html">Go Home</a>
+      </div>
+    </div>
+
+    <script>
+      function handleSignUp(event) {
+        event.preventDefault();
+        const fullname = document.getElementById("fullname").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const confirmPassword =
+          document.getElementById("confirmPassword").value;
+
+        if (password !== confirmPassword) {
+          alert("Passwords do not match");
+          return;
+        }
+
+        // You can replace this with actual form handling code or API call
+        alert("Account created for " + fullname);
+        window.location.href = "signupsuccess.html";
+      }
+    </script>
+  </body>
+</html>
